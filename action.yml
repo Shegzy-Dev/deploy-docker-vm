@@ -1,0 +1,48 @@
+name: "Deploy Docker Container to VM"
+description: "Stops old container, pulls latest image, and runs with environment variables."
+inputs:
+  host:
+    description: "SSH host"
+    required: true
+  username:
+    description: "SSH username"
+    required: true
+  key:
+    description: "SSH private key"
+    required: true
+  container_name:
+    description: "Name of container to run"
+    required: true
+  image_name:
+    description: "Docker image to run"
+    required: true
+  app_port:
+    description: "Port exposed in container"
+    required: true
+  env_mongo:
+    description: "MongoDB URI"
+    required: true
+  env_jwt:
+    description: "JWT secret"
+    required: true
+runs:
+  using: "composite"
+  steps:
+    - name: Deploy over SSH
+      uses: appleboy/ssh-action@v0.1.10
+      with:
+        host: ${{ inputs.host }}
+        username: ${{ inputs.username }}
+        key: ${{ inputs.key }}
+        script: |
+          echo "🔄 Pulling latest image..."
+          sudo docker stop ${{ inputs.container_name }} || true
+          sudo docker rm ${{ inputs.container_name }} || true
+          sudo docker pull ${{ inputs.image_name }}
+          echo "🚀 Starting container..."
+          sudo docker run -d -p 80:${{ inputs.app_port }} \
+            --name ${{ inputs.container_name }} \
+            -e MONGO_URI="${{ inputs.env_mongo }}" \
+            -e JWT_SECRET="${{ inputs.env_jwt }}" \
+            -e PORT="${{ inputs.app_port }}" \
+            ${{ inputs.image_name }}
