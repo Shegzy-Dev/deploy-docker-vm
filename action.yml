@@ -25,6 +25,12 @@ inputs:
   env_jwt:
     description: "JWT secret"
     required: true
+  TG_BOT_TOKEN:
+    description: "Telegram Bot Token"
+    required: true
+  TG_CHAT_ID:
+    description: "Telegram Chat ID"
+    required: true
 runs:
   using: "composite"
   steps:
