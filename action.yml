@@ -45,4 +45,6 @@ runs:
             -e MONGO_URI="${{ inputs.env_mongo }}" \
             -e JWT_SECRET="${{ inputs.env_jwt }}" \
             -e PORT="${{ inputs.app_port }}" \
+            -e TG_BOT_TOKEN="${{ inputs.TG_BOT_TOKEN }}" \
+            -e TG_CHAT_ID="${{ inputs.TG_CHAT_ID }}" \
             ${{ inputs.image_name }}
